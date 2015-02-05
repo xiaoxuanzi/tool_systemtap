@@ -1,4 +1,5 @@
 #tool for tcp
+#这个工具可以看到 tcp连接的 ip地址、端口、进程名、进程ID
 #! /usr/bin/env stap
 #This section illustrates how to monitor incoming TCP connections. This task is useful in 
 #identifying any unauthorized, suspicious, or otherwise unwanted network access requests in real time.
