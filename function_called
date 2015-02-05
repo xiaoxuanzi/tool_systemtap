@@ -1,0 +1,55 @@
+#!/bin/bash
+
+
+#this tool is used for 
+#given a kernel function name，this tool used to find out who call this function 
+
+# Options
+VERBOSE=""
+
+FUNCTIONNAME=""
+
+function usage {
+	echo "USAGE:"
+	echo "  ./function_called [options] -n <function name>"
+	echo ""
+	echo "OPTIONS:"
+	echo "  -h            # show help"
+	echo "  -v            # verbose mode"
+	echo ""
+	echo "  -f <function_name>"
+	echo ""
+}
+
+# Process cmdline options
+while getopts hvf: option
+do
+	case $option in
+	
+	v) VERBOSE="-v";;
+	f) FUNCTIONNAME=$OPTARG;;
+	h|?|*)echo $FUNCRION
+	   usage
+	   exit 1;;
+	esac
+done
+
+echo $FUNCTIONNAME
+
+stap -DSTP_NO_BUILDID_CHECK $VERSION -e '
+probe begin{
+	printf(" ---- begin -----\n")
+	printf("begin function =%s \n",@1)
+
+	
+}
+
+probe kernel.function(@1).return{
+	printf(" Function %s  be called BY %s\n",@1,probefunc())
+}
+
+probe end{
+	printf(" ---- end -----\n")
+}
+
+' $FUNCTIONNAME
