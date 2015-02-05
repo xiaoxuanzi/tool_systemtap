@@ -1,1 +1,25 @@
 #tool for tcp
+#! /usr/bin/env stap
+#This section illustrates how to monitor incoming TCP connections. This task is useful in 
+#identifying any unauthorized, suspicious, or otherwise unwanted network access requests in real time.
+#While tcp_connections.stp is running, it will print out the following information about any incoming TCP 
+#connections accepted by the system in real time:
+#Current UID
+#CMD - the command accepting the connection
+#PID of the command
+#Port used by the connection
+#IP address from which the TCP connection originated
+# https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/SystemTap_Beginners_Guide/useful-systemtap-scripts.html#tcpconnectionssect
+#
+probe begin {
+  printf("%6s %16s %6s %6s %16s\n",
+         "UID", "CMD", "PID", "PORT", "IP_SOURCE")
+}
+
+probe kernel.function("tcp_accept").return?,
+      kernel.function("inet_csk_accept").return? {
+  sock = $return
+  if (sock != 0)
+    printf("%6d %16s %6d %6d %16s\n", uid(), execname(), pid(),
+           inet_get_local_port(sock), inet_get_ip_source(sock))
+}
