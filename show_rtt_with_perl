@@ -1,0 +1,28 @@
+#!/usr/bin/perl 
+$i=0; 
+@RTT; 
+while(<>){ 
+        if(/RTT/){ 
+                @words = split(/ +/,$_); 
+                $RTT[$i++]=$words[8]; 
+        } 
+} 
+$i=0; 
+$RTTs=0; 
+$a=0.125; 
+$b=0.25; 
+while($RTT[$i]){ 
+        $RTTs *= (1-$a); 
+        $RTTs += $a*$RTT[$i]; 
+        if($i==0){ 
+                $RTTd=$RTT[$i]/2; 
+        }else{ 
+                $RTTd *= (1-$b); 
+                $RTTd += $b * abs($RTTs-$RTT[$i]); 
+        } 
+        $RTO = $RTTs + 4*$RTTd; 
+        print "RTTs=",$RTTs,"\t"; 
+        print "RTTd=",$RTTd,"\t"; 
+        print "RTO=",$RTO,"\n"; 
+        $i++; 
+} 
