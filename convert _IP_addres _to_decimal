@@ -1,0 +1,16 @@
+function ip2num()
+{
+	local ip=$1
+	a=`echo $ip | awk -F '.' '{print $1}' `
+	b=`echo $ip | awk -F '.' '{print $2}' `
+	c=`echo $ip | awk -F '.' '{print $3}' `
+	d=`echo $ip | awk -F '.' '{print $4}' `
+
+	echo $(((d<<24)+(c<<16)+(b<<8)+a))
+}
+sip="10.216.25.45"
+dip="10.216.25.80"
+
+
+ __src_ip=$(ip2num $dip) 
+echo "__src_ip == $__src_ip"
